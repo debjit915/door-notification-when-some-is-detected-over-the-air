@@ -1,0 +1,49 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
+const char* serverURL = "http://192.168.0.107:5000/motion"; // Replace with your PC IP
+
+int pirPin = 13;
+bool motionDetected = false;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(pirPin, INPUT);
+
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nConnected to WiFi");
+}
+
+void loop() {
+  int pirState = digitalRead(pirPin);
+
+  if (pirState == HIGH && !motionDetected) {
+    Serial.println("Motion Detected!");
+
+    if (WiFi.status() == WL_CONNECTED) {
+      HTTPClient http;
+      http.begin(serverURL);
+      int httpCode = http.GET();
+      if (httpCode > 0) {
+        Serial.println("Request sent successfully");
+      } else {
+        Serial.println("Error sending request");
+      }
+      http.end();
+    }
+
+    motionDetected = true;
+    delay(2000);  // Avoid spamming the server
+  } else if (pirState == LOW) {
+    motionDetected = false;
+  }
+}
