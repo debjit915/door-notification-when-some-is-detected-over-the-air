@@ -1,0 +1,33 @@
+# Smart Door Motion Notifier with ESP32 and Python
+
+This project detects motion using a PIR sensor connected to an ESP32 and notifies a PC via Wi-Fi. The PC speaks "Someone is at the door" when motion is detected.
+
+## 🧰 Components
+- ESP32
+- PIR Sensor
+- PC with Python 3
+- Same Wi-Fi network (PC and ESP32)
+
+## 🚀 How It Works
+1. ESP32 reads motion from PIR sensor.
+2. When motion is detected, ESP32 sends an HTTP GET request to the PC's local IP.
+3. A Flask server running on the PC receives the request.
+4. Python Text-to-Speech engine announces "Someone is at the door".
+
+## 📂 Files Included
+- `esp32_pir_notifier.ino` — Arduino code for ESP32
+- `main.py` — Python Flask + TTS script for PC
+- `README.md` — Project documentation
+
+## 🔧 Setup Instructions
+
+### ESP32:
+1. Update your Wi-Fi SSID and password in `esp32_pir_notifier.ino`.
+2. Replace `serverURL` with your PC's local IP (e.g., `192.168.0.107`).
+3. Upload to your ESP32 using Arduino IDE.
+
+### PC:
+1. Install Python 3.
+2. Install dependencies:
+   ```bash
+   pip install flask pyttsx3
